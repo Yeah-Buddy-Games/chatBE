@@ -6,19 +6,24 @@ dotenv.config();
 
 const app = express();
 
-// Update CORS configuration
-const corsOptions = {
-  origin:
-    process.env.FRONTEND_URL || "https://chatbotfe-b6e339a47a76.herokuapp.com",
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
+// More permissive CORS configuration
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
-app.use(cors(corsOptions));
 app.use(express.json());
 
 const API_KEY = process.env.LAMBDA_API_KEY;
 const API_URL = "https://api.lambdalabs.com/v1/chat/completions";
+
+// Add a simple GET route for testing
+app.get("/", (req, res) => {
+  res.send("Backend is running");
+});
 
 app.post("/chat", async (req, res) => {
   const { messages, model } = req.body;
