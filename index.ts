@@ -41,7 +41,19 @@ app.post("/chat", async (req, res) => {
       }),
     });
 
-    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const text = await response.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error("Failed to parse JSON:", text);
+      throw new Error("Invalid JSON response from API");
+    }
+
     res.json(data);
   } catch (error) {
     console.error("Error:", error);
