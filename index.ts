@@ -36,7 +36,7 @@ app.post("/chat", async (req, res) => {
         Authorization: `Bearer ${API_KEY}`,
       },
       body: JSON.stringify({
-        model: model || "hermes3-405b",
+        model: model || "hermes3-405b-fp8-128k",
         messages: messages,
       }),
     });
