@@ -18,7 +18,7 @@
     "postinstall": "npm run build"
   },
   "dependencies": {
-    "@forge-ml/rag": "^0.0.17",
+    "@forge-ml/rag": "file:./local_modules/@forge-ml/rag",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2"
