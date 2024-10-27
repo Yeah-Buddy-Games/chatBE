@@ -94,7 +94,7 @@ app.get("/rag", async (req, res) => {
   );
   const results = await ragger.query(
     "What is the total number of fruits?",
-    chunks.map((chunk) => chunk.id)
+    chunks.map((chunk) => chunk.forgeMetadata.documentId)
   );
 
   res.json(results);
