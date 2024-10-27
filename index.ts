@@ -6,7 +6,7 @@ import createRagger, {
   PostgresVectorStore,
   MinioDocStore,
   Document,
-} from "@forge-ml/rag";
+} from "forge-patch";
 
 dotenv.config();
 
