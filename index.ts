@@ -48,7 +48,9 @@ const embedder = new NomicEmbedder({
   apiKey: nomicApiKey,
 });
 
-const postgresVectorStore = new PostgresVectorStore(databaseURL);
+const postgresVectorStore = new PostgresVectorStore(
+  databaseURL + "?sslmode=require"
+);
 
 const minioDocStore = new MinioDocStore({
   endpoint: minioEndpoint,
