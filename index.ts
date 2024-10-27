@@ -92,7 +92,12 @@ app.get("/rag", async (req, res) => {
   const chunks = await ragger.initializeDocument(
     new Document("Norman has 10 apples, 2000 oranges, and 77 bananas.")
   );
-  res.json(chunks);
+  const results = await ragger.query(
+    "What is the total number of fruits?",
+    chunks.map((chunk) => chunk.id)
+  );
+
+  res.json(results);
 });
 
 app.post("/chat", async (req, res) => {
