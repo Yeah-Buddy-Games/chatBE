@@ -20,6 +20,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "forge-patch": "^0.0.18"
+    "forge-patch": "0.0.19"
   }
 }

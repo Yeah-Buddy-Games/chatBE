@@ -88,6 +88,7 @@ app.get("/", (req, res) => {
 });
 
 // Initialize a document and return the chunks
+// Chunker working
 app.post("/chunk", async (req, res) => {
   const { document, fileName } = req.body;
 
@@ -98,12 +99,26 @@ app.post("/chunk", async (req, res) => {
   }
 
   try {
-    const chunks = await ragger.initializeDocument(
-      new Document(document, { fileName })
-    );
+    //initialize the document with the text
+    const chunks = await ragger.initializeDocument(new Document(document));
     res.json(chunks);
   } catch (error) {
     console.error("Error chunking document:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while chunking the document" });
+  }
+});
+
+// Clear
+
+app.post("/clear", async (req, res) => {
+  try {
+    await postgresVectorStore.deleteEmbeddings;
+    await minioDocStore.deleteBucket();
+    res.json({ message: "Knowledge base cleared" });
+  } catch (error) {
+    console.error("Error clearing knowledge base:", error);
     res
       .status(500)
       .json({ error: "An error occurred while chunking the document" });
