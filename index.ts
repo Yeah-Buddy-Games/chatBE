@@ -50,6 +50,9 @@ const embedder = new NomicEmbedder({
 
 const postgresVectorStore = new PostgresVectorStore(databaseURL);
 
+// Call createIndex to ensure the table exists
+await postgresVectorStore.createIndex();
+
 const minioDocStore = new MinioDocStore({
   endpoint: minioEndpoint,
   accessKey: minioAccessKey,
