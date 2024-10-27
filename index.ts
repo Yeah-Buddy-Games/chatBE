@@ -89,10 +89,25 @@ app.get("/", (req, res) => {
 
 // Initialize a document and return the chunks
 app.post("/chunk", async (req, res) => {
-  const chunks = await ragger.initializeDocument(
-    new Document(req.body.document)
-  );
-  res.json(chunks);
+  const { document, fileName } = req.body;
+
+  if (!document || !fileName) {
+    return res
+      .status(400)
+      .json({ error: "Missing document content or file name" });
+  }
+
+  try {
+    const chunks = await ragger.initializeDocument(
+      new Document(document, { fileName })
+    );
+    res.json(chunks);
+  } catch (error) {
+    console.error("Error chunking document:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while chunking the document" });
+  }
 });
 
 app.post("/ragchat", async (req, res) => {
