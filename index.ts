@@ -90,7 +90,9 @@ app.get("/", (req, res) => {
 // Initialize a document and return the chunks
 app.get("/rag", async (req, res) => {
   const chunks = await ragger.initializeDocument(
-    new Document("Norman has 10 apples, 2000 oranges, and 77 bananas.")
+    new Document(
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean luctus, arcu eu venenatis mollis, ex purus blandit turpis, quis placerat lorem felis eget massa. Fusce luctus, elit ut maximus vestibulum, urna diam commodo lorem, vel gravida erat elit nec enim. Cras tempor ex non magna auctor tincidunt. Aliquam at dolor rutrum orci aliquam egestas. Sed iaculis metus et quam consequat, eu hendrerit lectus pharetra. Proin ultrices, elit a ullamcorper convallis, nisi elit posuere quam, vel commodo erat leo et nunc. Vivamus eu mi sit amet metus luctus dictum vitae id lorem. The total number of fruits is 99 apples, 8 bananas, and 10 oranges, Aenean augue turpis, vestibulum id sem at, pellentesque lacinia augue. Fusce ultricies, arcu sit amet ullamcorper rutrum, lorem mi commodo justo, nec molestie turpis enim at lectus. Nulla ornare nisi libero, quis molestie nibh dignissim quis. Fusce rhoncus est a risus tempus imperdiet."
+    )
   );
   const results = await ragger.query(
     "What is the total number of fruits?",
