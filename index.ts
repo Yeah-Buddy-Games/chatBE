@@ -17,8 +17,8 @@ if (!nomicApiKey) {
   throw new Error("NOMIC_API_KEY is not set in the environment variables");
 }
 
-const connectionString = process.env.POSTGRES_STRING;
-if (!connectionString) {
+const databaseURL = process.env.DATABASE_URL;
+if (!databaseURL) {
   throw new Error("DATABASE_URL is not set in the environment variables");
 }
 
@@ -48,7 +48,7 @@ const embedder = new NomicEmbedder({
   apiKey: nomicApiKey,
 });
 
-const postgresVectorStore = new PostgresVectorStore(connectionString);
+const postgresVectorStore = new PostgresVectorStore(databaseURL);
 
 const minioDocStore = new MinioDocStore({
   endpoint: minioEndpoint,
