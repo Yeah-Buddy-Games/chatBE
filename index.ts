@@ -88,18 +88,49 @@ app.get("/", (req, res) => {
 });
 
 // Initialize a document and return the chunks
-app.get("/rag", async (req, res) => {
+app.post("/chunk", async (req, res) => {
   const chunks = await ragger.initializeDocument(
-    new Document(
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean luctus, arcu eu venenatis mollis, ex purus blandit turpis, quis placerat lorem felis eget massa. Fusce luctus, elit ut maximus vestibulum, urna diam commodo lorem, vel gravida erat elit nec enim. Cras tempor ex non magna auctor tincidunt. Aliquam at dolor rutrum orci aliquam egestas. Sed iaculis metus et quam consequat, eu hendrerit lectus pharetra. Proin ultrices, elit a ullamcorper convallis, nisi elit posuere quam, vel commodo erat leo et nunc. Vivamus eu mi sit amet metus luctus dictum vitae id lorem. The total number of fruits is 99 apples, 8 bananas, and 10 oranges, Aenean augue turpis, vestibulum id sem at, pellentesque lacinia augue. Fusce ultricies, arcu sit amet ullamcorper rutrum, lorem mi commodo justo, nec molestie turpis enim at lectus. Nulla ornare nisi libero, quis molestie nibh dignissim quis. Fusce rhoncus est a risus tempus imperdiet."
-    )
+    new Document(req.body.document)
   );
-  const results = await ragger.query(
-    "What is the total number of fruits?",
-    chunks.map((chunk) => chunk.forgeMetadata.documentId)
-  );
+  res.json(chunks);
+});
 
-  res.json(results);
+app.post("/ragchat", async (req, res) => {
+  const { messages, model } = req.body;
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: model || "hermes3-405b-fp8-128k",
+        messages: messages,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const text = await response.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error("Failed to parse JSON:", text);
+      throw new Error("Invalid JSON response from API");
+    }
+
+    res.json(data);
+  } catch (error) {
+    console.error("Error:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while processing your request." });
+  }
 });
 
 app.post("/chat", async (req, res) => {
