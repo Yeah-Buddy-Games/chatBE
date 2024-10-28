@@ -136,9 +136,7 @@ app.post("/ragchat", async (req, res) => {
   const { messages, model } = req.body;
 
   // Combine all messages into a single query string
-  const queryString = messages
-    .map((msg: any) => msg.content)
-    .join(" ");
+  const queryString = messages.map((msg: any) => msg.content).join(" ");
 
   if (!queryString) {
     return res.status(400).json({ error: "No messages found" });
@@ -150,33 +148,39 @@ app.post("/ragchat", async (req, res) => {
 
     console.log(results);
 
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: model || "hermes3-405b-fp8-128k",
-        messages: messages,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const text = await response.text();
-    let data;
     try {
-      data = JSON.parse(text);
-    } catch (e) {
-      console.error("Failed to parse JSON:", text);
-      throw new Error("Invalid JSON response from API");
-    }
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: model || "hermes3-405b-fp8-128k",
+          messages: messages,
+        }),
+      });
 
-    res.json(data);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        console.error("Failed to parse JSON:", text);
+        throw new Error("Invalid JSON response from API");
+      }
+
+      res.json(data);
+    } catch (error) {
+      console.error("Error:", error);
+      res
+        .status(500)
+        .json({ error: "An error occurred while processing your request." });
+    }
   } catch (error) {
     console.error("Error:", error);
     res
