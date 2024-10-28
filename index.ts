@@ -149,6 +149,12 @@ app.post("/ragchat", async (req, res) => {
 
     console.log(results);
 
+    // Format the results for the frontend
+    const chunks = results.map((result: any) => ({
+      id: result.id,
+      content: result.text,
+    }));
+
     try {
       const response = await fetch(API_URL, {
         method: "POST",
@@ -167,15 +173,13 @@ app.post("/ragchat", async (req, res) => {
       }
 
       const text = await response.text();
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        console.error("Failed to parse JSON:", text);
-        throw new Error("Invalid JSON response from API");
-      }
+      let data = JSON.parse(text);
 
-      res.json(data);
+      // Include chunks in the response
+      res.json({
+        ...data,
+        chunks: chunks,
+      });
     } catch (error) {
       console.error("Error:", error);
       res
