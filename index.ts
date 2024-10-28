@@ -155,6 +155,26 @@ app.post("/ragchat", async (req, res) => {
       content: result.text,
     }));
 
+    // Get the original system message (character description)
+    const originalSystemMessage = messages.find(
+      (msg: any) => msg.role === "system"
+    );
+
+    // Create a combined system message with both character description and RAG context
+    const contextMessage = {
+      role: "system",
+      content: `${
+        originalSystemMessage?.content || ""
+      }\n\nRelevant context:\n${chunks
+        .map((chunk) => chunk.content)
+        .join("\n\n")}`,
+    };
+
+    // Replace the original system message with the augmented one
+    const augmentedMessages = messages.map((msg: any) =>
+      msg.role === "system" ? contextMessage : msg
+    );
+
     try {
       const response = await fetch(API_URL, {
         method: "POST",
@@ -164,7 +184,7 @@ app.post("/ragchat", async (req, res) => {
         },
         body: JSON.stringify({
           model: model || "hermes3-405b-fp8-128k",
-          messages: messages,
+          messages: augmentedMessages,
         }),
       });
 
