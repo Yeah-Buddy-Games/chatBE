@@ -11,6 +11,7 @@ import createRagger, {
 dotenv.config();
 
 const app = express();
+let documentIds: string[] = [];
 
 const nomicApiKey = process.env.NOMIC_API_KEY;
 if (!nomicApiKey) {
@@ -100,7 +101,9 @@ app.post("/chunk", async (req, res) => {
 
   try {
     //initialize the document with the text
-    const chunks = await ragger.initializeDocument(new Document(document));
+    const doc = new Document(document);
+    const chunks = await ragger.initializeDocument(doc);
+    documentIds.push(doc.forgeMetadata.documentId);
     res.json(chunks);
   } catch (error) {
     console.error("Error chunking document:", error);
@@ -114,8 +117,12 @@ app.post("/chunk", async (req, res) => {
 
 app.post("/clear", async (req, res) => {
   try {
-    await postgresVectorStore.deleteEmbeddings;
-    await minioDocStore.deleteBucket();
+    await postgresVectorStore.deleteEmbeddings();
+    for (const id of documentIds) {
+      await minioDocStore.deleteDocument(id);
+      documentIds = documentIds.filter((id) => id !== id);
+    }
+
     res.json({ message: "Knowledge base cleared" });
   } catch (error) {
     console.error("Error clearing knowledge base:", error);
