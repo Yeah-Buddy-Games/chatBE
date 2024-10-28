@@ -135,6 +135,10 @@ app.post("/clear", async (req, res) => {
 app.post("/ragchat", async (req, res) => {
   const { messages, model } = req.body;
 
+  const results = await ragger.query(messages, documentIds);
+
+  console.log(results);
+
   try {
     const response = await fetch(API_URL, {
       method: "POST",
