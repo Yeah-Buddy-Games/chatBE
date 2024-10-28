@@ -135,9 +135,20 @@ app.post("/clear", async (req, res) => {
 app.post("/ragchat", async (req, res) => {
   const { messages, model } = req.body;
 
-  const results = await ragger.query(messages, documentIds);
+  // Combine all messages into a single query string
+  const queryString = messages
+    .map((msg: any) => msg.content)
+    .join(" ");
 
-  console.log(results);
+  if (!queryString) {
+    return res.status(400).json({ error: "No messages found" });
+  }
+
+  try {
+    // Pass the combined messages string to query
+    const results = await ragger.query(queryString, documentIds);
+
+    console.log(results);
 
   try {
     const response = await fetch(API_URL, {
