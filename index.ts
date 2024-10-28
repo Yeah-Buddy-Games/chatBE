@@ -119,6 +119,7 @@ app.post("/clear", async (req, res) => {
   try {
     await postgresVectorStore.deleteEmbeddings();
     for (const id of documentIds) {
+      console.log(id);
       await minioDocStore.deleteDocument(id);
       documentIds = documentIds.filter((id) => id !== id);
     }
