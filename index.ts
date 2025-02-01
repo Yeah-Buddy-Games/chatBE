@@ -81,7 +81,7 @@ app.use(
 app.use(express.json());
 
 const API_KEY = process.env.LAMBDA_API_KEY;
-const API_URL = "https://api.lambdalabs.com/v1/chat/completions";
+const API_URL = "https://api.together.xyz/v1/chat/completions";
 
 // Add a simple GET route for testing
 app.get("/", (req, res) => {
