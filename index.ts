@@ -80,7 +80,7 @@ app.use(
 
 app.use(express.json());
 
-const API_KEY = process.env.LAMBDA_API_KEY;
+const API_KEY = 7237da92a07973fba3e5b4a3c11dac1e2d806b1ef05caf136ad3c82921adc0f5;
 const API_URL = "https://api.together.xyz/v1/chat/completions";
 
 // Add a simple GET route for testing
